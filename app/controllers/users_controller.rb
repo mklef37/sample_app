@@ -10,6 +10,7 @@ before_filter :admin_user, only: :destroy
   def show
     if(User.exists?(params[:id]))
   	  @user = User.find(params[:id])
+      @microposts = @user.microposts.paginate(page: params[:page])
     else
       redirect_to root_path
       flash[:error] = "The user with given ID does not exist"
@@ -52,13 +53,6 @@ before_filter :admin_user, only: :destroy
   end
   
   private
-
-    def signed_in_user
-      unless signed_in?
-        store_location
-        redirect_to signin_path, notice: "Please sign in." unless signed_in?
-      end
-    end
 
     def correct_user
       @user = User.find(params[:id])
